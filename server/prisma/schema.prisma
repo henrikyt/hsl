@@ -1,0 +1,63 @@
+// This is your Prisma schema file
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Vehicle {
+  id             String          @id @unique
+  state          VehicleState
+  description    String?
+  operator       Int
+  vehicleId      Int
+  vehicleTime    DateTime
+  speed          Float?
+  heading        Float?
+  latitude       Float?        
+  longitude      Float?        
+  acceleration   Float?
+  scheduleOffset Float?
+  odometer       Float?
+  doorStatus     Int?
+  start          String?
+  stoppedAt      String?
+  route          String?
+  occupancy      Int?
+  arrival        DateTime?
+  departure      DateTime?
+}
+
+model Session {
+  id             String @id @unique
+  latitudeStart  Float?
+  longitudeStart Float?
+  latitudeEnd    Float?
+  longitudeEnd   Float?
+}
+
+enum VehicleState {
+  VP
+  DUE
+  ARR
+  DEP
+  ARS
+  PDE
+  PAS
+  WAIT
+  DOO
+  DOC
+  TLR
+  TLA
+  DA
+  DOUT
+  BA
+  BOUT
+  VJA
+  VJOUT
+}

@@ -1,0 +1,9 @@
+/config
+/test
+/lib
+/asset
+/res
+/src/api/gen
+/*.*
+**/__tests__/*
+/@types
