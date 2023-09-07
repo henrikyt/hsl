@@ -50,29 +50,6 @@ function buildServer() {
 
 	fastify.register(fastifySwaggerUi, { routePrefix: "/doc" });
 
-	// basic req
-
-	fastify.get("/healthcheck", async function () {
-		return { status: "OK" };
-	});
-
-	fastify.get("/cookie", async (request, reply) => {
-		const token = await reply.jwtSign({
-			name: "token",
-		});
-
-		reply
-			.setCookie("token", token, {
-				path: "/",
-			})
-			.code(200)
-			.send("Cookie sent");
-	});
-
-	fastify.get("/verifycookie", (request, reply) => {
-		reply.send({ code: "OK", message: "it works!" });
-	});
-
 	// Routes
 
 	for (const schema of [...vehicleSchemas, ...sessionSchemas]) {
@@ -83,6 +60,16 @@ function buildServer() {
 	fastify.register(vehicleRoutes, { prefix: "api/vehicle" });
 
 	// Hooks
+
+	fastify.addHook("onRequest", async (request, reply) => {
+		if (!request.originalUrl?.includes("/doc") && !request.originalUrl.includes("/api/session/token")) {
+			try {
+				await request.jwtVerify()
+			} catch (err) {
+				reply.send(err)
+			}
+		}
+	})
 
 	fastify.addHook("onClose", () => {
 		hsl.disconnect();

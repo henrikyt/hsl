@@ -18,6 +18,15 @@ export const requestClient = async <T>({
 	responseType?: string;
 	signal?: AbortSignal;
 }): Promise<T> => {
+	if(typeof url === "object"){
+		method = (url as any).method;
+		params = (url as any).params;
+		data = (url as any).data;
+		method = (url as any).method;
+		signal = (url as any).signal;
+		headers = (url as any).headers;
+		url = (url as any).url;
+	}
 	log.debug(method, url);
 	let uri = `${process.env.API_URL}${url}`;
 	if (uri.endsWith("/")) uri = uri.slice(0, -1);

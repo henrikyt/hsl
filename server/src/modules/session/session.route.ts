@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { getSessionHandler } from "./session.controller";
+import { getSessionHandler, getTokenHandler } from "./session.controller";
 import { $ref } from "./session.schema";
 
 async function sessionRoutes(server: FastifyInstance) {
@@ -13,6 +13,17 @@ async function sessionRoutes(server: FastifyInstance) {
 			},
 		},
 		getSessionHandler,
+	);
+	server.get(
+		"/token",
+		{
+			schema: {
+				response: {
+					200: $ref("tokenResponseSchema"),
+				},
+			},
+		},
+		getTokenHandler,
 	);
 }
 

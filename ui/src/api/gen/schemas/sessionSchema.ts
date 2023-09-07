@@ -4,8 +4,10 @@
  * HSL Realtime
  * OpenAPI spec version: 0.0.1
  */
-import type { SessionSchemaSessionResponseSchema } from "./sessionSchemaSessionResponseSchema";
+import type { SessionSchemaSessionResponseSchema } from './sessionSchemaSessionResponseSchema';
+import type { SessionSchemaTokenResponseSchema } from './sessionSchemaTokenResponseSchema';
 
 export interface SessionSchema {
-	sessionResponseSchema: SessionSchemaSessionResponseSchema;
+  sessionResponseSchema: SessionSchemaSessionResponseSchema;
+  tokenResponseSchema: SessionSchemaTokenResponseSchema;
 }

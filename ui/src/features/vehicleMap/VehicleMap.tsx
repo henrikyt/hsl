@@ -1,9 +1,9 @@
-import { useRef, useState } from "react";
-import { GoogleMap, Rectangle, withGoogleMap, withScriptjs, Marker } from "react-google-maps";
-import { compose, withProps } from "recompose";
-import { useGetApiSession, useGetApiVehicle } from "../../api/gen";
+// @ts-nocheck
 import debounce from "lodash/debounce";
-import { initial } from "lodash";
+import { useRef, useState } from "react";
+import { GoogleMap, Marker, Rectangle, withGoogleMap, withScriptjs } from "react-google-maps";
+import { compose, withProps } from "recompose";
+import { useGetApiVehicle } from "../../api/gen";
 
 type Coords = {
 	latitudeStart: number;
@@ -23,25 +23,27 @@ export const VehicleMap = compose(
 	withGoogleMap,
 )((props) => {
 	const [cords, setCords] = useState<Coords>(
-		(props as any).initialCoords ?? {
-			latitudeStart: 60.161693147166,
-			longitudeStart: 24.938047714233,
-			latitudeEnd: 60.167993122888,
-			longitudeEnd: 24.951252288818,
+		{
+			latitudeStart: props.initialCoords?.latitudeStart || 60.161693147166,
+			longitudeStart: props.initialCoords?.longitudeStart || 24.938047714233,
+			latitudeEnd: props.initialCoords?.latitudeEnd || 60.167993122888,
+			longitudeEnd: props.initialCoords?.longitudeEnd || 24.951252288818,
 		},
 	);
-	// typing error in generation?
+
 	const { data: vehicles } = useGetApiVehicle(cords, { query: { refetchInterval: 500, queryKey: ["myVehicles"] } });
 	const ref = useRef<any>();
 
 	const debouncedSearch = debounce(async () => {
 		const bounds = ref.current.getBounds();
 		if (!bounds) return;
+		const start = bounds.getNorthEast();
+		const end = bounds.getSouthWest();
 		const newCords: Coords = {
-			latitudeStart: bounds.Va.lo.toFixed(12),
-			latitudeEnd: bounds.Va.hi.toFixed(12),
-			longitudeStart: bounds.Ja.lo.toFixed(12),
-			longitudeEnd: bounds.Ja.hi.toFixed(12),
+			latitudeStart: end.lat().toFixed(12),
+			latitudeEnd: start.lat().toFixed(12),
+			longitudeStart: end.lng().toFixed(12),
+			longitudeEnd: start.lng().toFixed(12),
 		};
 		setCords(newCords);
 	}, 2000);

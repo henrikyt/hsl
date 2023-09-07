@@ -1,7 +1,13 @@
 import { RouteHandler } from "fastify";
-import { updateSessionId } from "./session.service";
+import { findSession, updateSessionId } from "./session.service";
 
 export const getSessionHandler: RouteHandler = async (request, reply) => {
+	const data = await findSession(request.cookies["token"] ?? "dbg");
+	return data;
+};
+
+export const getTokenHandler: RouteHandler = async (request, reply) => {
+	if (request.cookies["token"]) return { "status": "ok" };
 	const token = await reply.jwtSign({
 		name: "token",
 	});
@@ -10,6 +16,6 @@ export const getSessionHandler: RouteHandler = async (request, reply) => {
 		path: "/",
 	});
 
-	const data = await updateSessionId({ id: "dbg" });
-	return data;
+	await updateSessionId({ id: token });
+	return { "status": "ok" };
 };

@@ -4,7 +4,7 @@ import { VehiclesSchema, VehiclesSchemaVehiclesResponseSchemaItem, useGetApiVehi
 import { QueryCache, QueryObserver, useQueryClient } from "@tanstack/react-query";
 
 const useStyles = makeStyles()((theme) => ({
-	table: {},
+	table: { overflow: "auto" },
 }));
 
 export const operatorMap = {
@@ -66,21 +66,23 @@ export const VehicleDetails: FunctionComponent = () => {
 	};
 
 	return (
-		<table>
-			<tr>
-				{headers.map((headerKey) => (
-					<th>{headerKey}</th>
-				))}
-			</tr>
-			<tbody>
-				{vehicles.map((vehicle) => (
-					<tr>
-						{Object.keys(vehicle).map((key) => (
-							<td>{renderCell(key, vehicle[key as keyof typeof vehicle])}</td>
-						))}
-					</tr>
-				))}
-			</tbody>
-		</table>
+		<div className={classes.table}>
+			<table>
+				<tr>
+					{headers.map((headerKey) => (
+						<th>{headerKey}</th>
+					))}
+				</tr>
+				<tbody>
+					{vehicles.map((vehicle) => (
+						<tr>
+							{Object.keys(vehicle).map((key) => (
+								<td>{renderCell(key, vehicle[key as keyof typeof vehicle])}</td>
+							))}
+						</tr>
+					))}
+				</tbody>
+			</table>
+		</div>
 	);
 };

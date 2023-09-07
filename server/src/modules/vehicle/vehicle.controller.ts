@@ -5,10 +5,10 @@ import { findSession, updateSession } from "../session/session.service";
 import { hsl } from "../../lib/hsl";
 
 export async function getVehiclesHandler(req: FastifyRequest<{ Querystring: LatitudeParams }>, rep: FastifyReply) {
-	const vehicles = await getVehicles(req.query);
 	const token = req.cookies["token"] ?? "dbg";
 	const oldSession = await findSession(token);
-	const p = await updateSession({ ...req.query, id: token });
+	await updateSession({ ...req.query, id: token });
+	const vehicles = await getVehicles(req.query);
 	// reset polling if needed
 	const { latitudeStart, latitudeEnd, longitudeEnd, longitudeStart } = req.query;
 	if (
@@ -19,7 +19,8 @@ export async function getVehiclesHandler(req: FastifyRequest<{ Querystring: Lati
 				oldSession.longitudeEnd !== longitudeEnd ||
 				oldSession.longitudeStart !== longitudeStart))
 	) {
-		hsl.startTracking(req.query, token);
+		if (latitudeEnd && latitudeStart && longitudeEnd && longitudeStart)
+			hsl.startTracking(req.query, token);
 	}
 	return vehicles;
 }

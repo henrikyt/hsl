@@ -8,11 +8,16 @@ export const sessionResponseSchema = z.object({
 	longitudeEnd: z.number(),
 });
 
+export const tokenResponseSchema = z.object({
+	status: z.string()
+});
+
 export type LatitudeParams = z.infer<typeof sessionResponseSchema>;
 
 export const { schemas: sessionSchemas, $ref } = buildJsonSchemas(
 	{
 		sessionResponseSchema,
+		tokenResponseSchema,
 	},
 	{ $id: "sessionSchema" },
 );
