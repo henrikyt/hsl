@@ -30,6 +30,8 @@ server <- ui : http
 server -> db 
 ```
 
+![componenes](./component.jpg)
+
 Sequence
 
 ```plantuml
@@ -54,11 +56,14 @@ hsl-->server : real time vehicle data
 ui<--server : real time vehicle data
 ```
 
+![componenes](./sq.jpg)
+
 ## Todo
 
 - add UI e2e tests
 - add UI unit tests
-- send updates to clients via Websocket instead of polling 
+- send updates to clients via Websocket instead of polling
+- wire mock server to UI
 
 ## Local environment setup
 
