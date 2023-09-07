@@ -25,6 +25,7 @@ export function getVehicles(params: GetVehiclesParams, since?: Date) {
 				vehicleTime: { gte: since },
 			},
 			orderBy: { id: "asc" },
+			take: 200
 		});
 	} else {
 		return prisma.vehicle;

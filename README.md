@@ -48,11 +48,13 @@ db<-server : get session
 db->server : session
 ui<-server : prev/cur session data
 ui->server : get vehicles
-db<->server : get vehicles
+db<-server : get vehicles
+db->server : vehicles
 hsl<-server : subscribe
 ui<-server : vehicles
 ...
 hsl-->server : real time vehicle data
+db<-server : vehicles
 ui<--server : real time vehicle data
 ```
 
@@ -64,6 +66,8 @@ ui<--server : real time vehicle data
 - add UI unit tests
 - send updates to clients via Websocket instead of polling
 - wire mock server to UI
+- remove 200 vehicle limit
+- queue mq > db
 
 ## Local environment setup
 
