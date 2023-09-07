@@ -18,7 +18,7 @@ export const requestClient = async <T>({
 	responseType?: string;
 	signal?: AbortSignal;
 }): Promise<T> => {
-	if(typeof url === "object"){
+	if (typeof url === "object") {
 		method = (url as any).method;
 		params = (url as any).params;
 		data = (url as any).data;

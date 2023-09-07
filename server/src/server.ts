@@ -31,7 +31,7 @@ function buildServer() {
 	});
 
 	fastify.register(fastifyStatic, {
-		root: path.join(__dirname, 'public')
+		root: path.join(__dirname, "public"),
 	});
 
 	fastify.register(fastifyCookie);
@@ -64,12 +64,12 @@ function buildServer() {
 	fastify.addHook("onRequest", async (request, reply) => {
 		if (!request.originalUrl?.includes("/doc") && !request.originalUrl.includes("/api/session/token")) {
 			try {
-				await request.jwtVerify()
+				await request.jwtVerify();
 			} catch (err) {
-				reply.send(err)
+				reply.send(err);
 			}
 		}
-	})
+	});
 
 	fastify.addHook("onClose", () => {
 		hsl.disconnect();

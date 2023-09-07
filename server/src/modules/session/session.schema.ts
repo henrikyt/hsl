@@ -9,7 +9,7 @@ export const sessionResponseSchema = z.object({
 });
 
 export const tokenResponseSchema = z.object({
-	status: z.string()
+	status: z.string(),
 });
 
 export type LatitudeParams = z.infer<typeof sessionResponseSchema>;

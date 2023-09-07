@@ -16,20 +16,18 @@ export const VehicleMap = compose(
 	withProps({
 		googleMapURL: "https://maps.googleapis.com/maps/api/js?key=" + process.env.API_KEY_GMAP + "&v=3.exp&libraries=geometry,drawing,places",
 		loadingElement: <div style={{ height: `100%` }} />,
-		containerElement: <div style={{ height: `800px` }} />,
+		containerElement: <div style={{ height: `600px`, flexShrink: 0, flexGrow: 0 }} />,
 		mapElement: <div style={{ height: `100%` }} />,
 	}),
 	withScriptjs,
 	withGoogleMap,
 )((props) => {
-	const [cords, setCords] = useState<Coords>(
-		{
-			latitudeStart: props.initialCoords?.latitudeStart || 60.161693147166,
-			longitudeStart: props.initialCoords?.longitudeStart || 24.938047714233,
-			latitudeEnd: props.initialCoords?.latitudeEnd || 60.167993122888,
-			longitudeEnd: props.initialCoords?.longitudeEnd || 24.951252288818,
-		},
-	);
+	const [cords, setCords] = useState<Coords>({
+		latitudeStart: props.initialCoords?.latitudeStart || 60.161693147166,
+		longitudeStart: props.initialCoords?.longitudeStart || 24.938047714233,
+		latitudeEnd: props.initialCoords?.latitudeEnd || 60.167993122888,
+		longitudeEnd: props.initialCoords?.longitudeEnd || 24.951252288818,
+	});
 
 	const { data: vehicles } = useGetApiVehicle(cords, { query: { refetchInterval: 500, queryKey: ["myVehicles"] } });
 	const ref = useRef<any>();
@@ -62,9 +60,9 @@ export const VehicleMap = compose(
 		<>
 			<GoogleMap defaultZoom={14} defaultCenter={{ lat: 60.163693147166, lng: 24.948047714233 }}>
 				<Rectangle ref={ref} onBoundsChanged={onBoundsChanged} draggable editable defaultBounds={bounds}></Rectangle>
-				{vehicles?.splice(0, 300).map((v) => <Marker label={v.description} position={new google.maps.LatLng(v.latitude, v.longitude)}></Marker>)}
+				{vehicles?.splice(0, 200).map((v) => <Marker label={v.description} position={new google.maps.LatLng(v.latitude, v.longitude)}></Marker>)}
 			</GoogleMap>
-			{vehicles && vehicles?.length > 300 && <p>only 300 shown for perf reasons!</p>}
+			{vehicles && vehicles?.length > 200 && <p>only 200 shown for perf reasons!</p>}
 		</>
 	);
 });

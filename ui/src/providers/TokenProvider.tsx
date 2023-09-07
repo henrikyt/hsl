@@ -6,9 +6,7 @@ type Props = {
 };
 
 export const TokenProvider: FunctionComponent<Props> = ({ children }) => {
-
 	const { isError: isTokenError, isLoading: isTokenLoading } = useGetApiSessionToken();
-	console.log(isTokenError, isTokenLoading)
 	const { isError, isLoading } = useGetApiSession({ query: { enabled: !isTokenLoading && !isTokenError, refetchInterval: 5000 } });
 
 	if (isLoading || isTokenLoading) {

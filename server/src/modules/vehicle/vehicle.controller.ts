@@ -8,7 +8,9 @@ export async function getVehiclesHandler(req: FastifyRequest<{ Querystring: Lati
 	const token = req.cookies["token"] ?? "dbg";
 	const oldSession = await findSession(token);
 	await updateSession({ ...req.query, id: token });
-	const vehicles = await getVehicles(req.query);
+	const since = new Date();
+	since.setMinutes(since.getMinutes() - 15);
+	const vehicles = await getVehicles(req.query, since);
 	// reset polling if needed
 	const { latitudeStart, latitudeEnd, longitudeEnd, longitudeStart } = req.query;
 	if (
@@ -19,8 +21,7 @@ export async function getVehiclesHandler(req: FastifyRequest<{ Querystring: Lati
 				oldSession.longitudeEnd !== longitudeEnd ||
 				oldSession.longitudeStart !== longitudeStart))
 	) {
-		if (latitudeEnd && latitudeStart && longitudeEnd && longitudeStart)
-			hsl.startTracking(req.query, token);
+		if (latitudeEnd && latitudeStart && longitudeEnd && longitudeStart) hsl.startTracking(req.query, token);
 	}
 	return vehicles;
 }

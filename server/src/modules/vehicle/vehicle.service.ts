@@ -15,13 +15,14 @@ export async function updateVehicles(data: UpdateVehiclesParams) {
 	return collection;
 }
 
-export function getVehicles(params?: GetVehiclesParams) {
+export function getVehicles(params: GetVehiclesParams, since?: Date) {
 	if (params) {
 		const { latitudeStart, longitudeStart, latitudeEnd, longitudeEnd } = params;
 		return prisma.vehicle.findMany({
 			where: {
 				latitude: { gte: latitudeStart, lte: latitudeEnd },
 				longitude: { gte: longitudeStart, lte: longitudeEnd },
+				vehicleTime: { gte: since },
 			},
 			orderBy: { id: "asc" },
 		});

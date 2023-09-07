@@ -6,5 +6,5 @@
  */
 
 export type SessionSchemaTokenResponseSchema = {
-  status: string;
+	status: string;
 };

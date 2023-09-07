@@ -97,7 +97,7 @@ class HSLClient {
 	}
 
 	async startTracking({ latitudeStart, latitudeEnd, longitudeEnd, longitudeStart }: LatitudeParams, token: string) {
-		this.log("tracking", latitudeStart, latitudeEnd, longitudeEnd, longitudeStart)
+		this.log("tracking", latitudeStart, latitudeEnd, longitudeEnd, longitudeStart);
 		this.unsubscribe(this.subscriptions.get(token));
 		const topic = bbox2geohashes(latitudeStart, longitudeStart, latitudeEnd, longitudeEnd).map(
 			(t) => `/hfp/v2/journey/ongoing/+/+/+/+/+/+/+/+/+/+/${t}/#`,

@@ -74,7 +74,6 @@ const vehiclesRequestSchema = z.object({
 	longitudeStart: z.number().optional(),
 	latitudeEnd: z.number().optional(),
 	longitudeEnd: z.number().optional(),
-	since: z.string().datetime().optional(),
 });
 
 const vehiclesResponseSchema = z.array(vehicleResponseSchema);

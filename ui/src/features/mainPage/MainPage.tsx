@@ -6,6 +6,7 @@ import { VehicleDetails } from "../vehicleDetails/VehicleDetails";
 
 const useStyles = makeStyles()((theme) => ({
 	root: {
+		height: "100%",
 		display: "flex",
 		flexDirection: "column",
 		"& >h2": {

@@ -1,10 +1,21 @@
+import { QueryObserver, useQueryClient } from "@tanstack/react-query";
 import { FunctionComponent, useEffect, useState } from "react";
+import { VehiclesSchemaVehiclesResponseSchemaItem } from "../../api/gen";
 import { makeStyles } from "../../util/theme";
-import { VehiclesSchema, VehiclesSchemaVehiclesResponseSchemaItem, useGetApiVehicle } from "../../api/gen";
-import { QueryCache, QueryObserver, useQueryClient } from "@tanstack/react-query";
 
 const useStyles = makeStyles()((theme) => ({
-	table: { overflow: "auto" },
+	root: {
+		height: "100%",
+		flexShrink: 1,
+		flexGrow: 1,
+		overflow: "auto",
+		"& >table": { width: "100%" },
+		"& th": {
+			position: "sticky",
+			top: "0",
+			backgroundColor: "#F9F8F8",
+		},
+	},
 }));
 
 export const operatorMap = {
@@ -58,7 +69,7 @@ export const VehicleDetails: FunctionComponent = () => {
 			case "departure": {
 				if (!d) return "";
 				const date = new Date(d as string);
-				return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+				return date.toLocaleTimeString();
 			}
 			default:
 				return d as string;
@@ -66,7 +77,7 @@ export const VehicleDetails: FunctionComponent = () => {
 	};
 
 	return (
-		<div className={classes.table}>
+		<div className={classes.root}>
 			<table>
 				<tr>
 					{headers.map((headerKey) => (
