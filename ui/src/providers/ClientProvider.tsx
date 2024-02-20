@@ -6,7 +6,7 @@ type Props = {
 	children?: ReactNode;
 };
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 export const ClientProvider: FunctionComponent<Props> = ({ children }) => {
 	return (

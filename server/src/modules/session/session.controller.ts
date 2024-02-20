@@ -7,7 +7,10 @@ export const getSessionHandler: RouteHandler = async (request, reply) => {
 };
 
 export const getTokenHandler: RouteHandler = async (request, reply) => {
-	if (request.cookies["token"]) return { status: "ok" };
+	if (request.cookies["token"]) {
+		await updateSessionId({ id: request.cookies["token"] });
+		return { status: "ok" };
+	}
 	const token = await reply.jwtSign({
 		name: "token",
 	});

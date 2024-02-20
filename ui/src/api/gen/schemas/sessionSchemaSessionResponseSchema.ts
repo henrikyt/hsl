@@ -6,8 +6,8 @@
  */
 
 export type SessionSchemaSessionResponseSchema = {
-	latitudeStart: number;
-	longitudeStart: number;
 	latitudeEnd: number;
+	latitudeStart: number;
 	longitudeEnd: number;
+	longitudeStart: number;
 };

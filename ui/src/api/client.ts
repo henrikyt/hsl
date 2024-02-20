@@ -28,7 +28,7 @@ export const requestClient = async <T>({
 		url = (url as any).url;
 	}
 	log.debug(method, url);
-	let uri = `${process.env.API_URL}${url}`;
+	let uri = `${process.env.API_URL || ""}${url}`;
 	if (uri.endsWith("/")) uri = uri.slice(0, -1);
 	if (params) uri += "?" + new URLSearchParams(params as Record<string, string>);
 	const response = await fetch(uri, {

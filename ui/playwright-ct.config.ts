@@ -1,7 +1,5 @@
 import { defineConfig, devices } from "@playwright/experimental-ct-react";
-import { resolve } from "path";
 process.env.APP_ENV = "test";
-const { ENVIRONMENT } = require("./config/environment.js");
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -27,7 +25,7 @@ export default defineConfig({
 		? [
 				["html", { open: "never", outputFile: "report.html", outputFolder: "test-report" }],
 				["junit", { outputFile: "pw-report.xml" }],
-		  ]
+			]
 		: "line",
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 	use: {
@@ -38,12 +36,8 @@ export default defineConfig({
 		ctCacheDir: "./out/ct",
 		ctTemplateDir: "./playwright",
 		ctViteConfig: {
-			define: { "window.meta.env": ENVIRONMENT, global: "window" },
 			build: { rollupOptions: { treeshake: true } },
 		},
-	},
-	metadata: {
-		environment: ENVIRONMENT,
 	},
 	/* Configure projects for major browsers */
 	projects: process.env.CI
@@ -60,6 +54,6 @@ export default defineConfig({
 					name: "webkit",
 					use: { ...devices["Desktop Safari"] },
 				},
-		  ]
+			]
 		: undefined,
 });

@@ -10,6 +10,7 @@ export const handlers = [...getDefaultMSW()];
 
 faker.seed(fakerSeedNumber);
 
+// wire up mock server for unit tests
 const test = base.extend<{
 	worker: MockServiceWorker;
 }>({

@@ -1,7 +1,7 @@
 // @ts-nocheck
 import debounce from "lodash/debounce";
 import { useRef, useState } from "react";
-import { GoogleMap, Marker, Rectangle, withGoogleMap, withScriptjs } from "react-google-maps";
+import { GoogleMap, Marker, Rectangle, TrafficLayer, withGoogleMap, withScriptjs } from "react-google-maps";
 import { compose, withProps } from "recompose";
 import { useGetApiVehicle } from "../../api/gen";
 
@@ -59,10 +59,10 @@ export const VehicleMap = compose(
 	return (
 		<>
 			<GoogleMap defaultZoom={14} defaultCenter={{ lat: 60.163693147166, lng: 24.948047714233 }}>
-				<Rectangle ref={ref} onBoundsChanged={onBoundsChanged} draggable editable defaultBounds={bounds}></Rectangle>
-				{vehicles?.splice(0, 200).map((v) => <Marker label={v.description} position={new google.maps.LatLng(v.latitude, v.longitude)}></Marker>)}
+				<Rectangle ref={ref} data-testid="selector" onBoundsChanged={onBoundsChanged} draggable editable defaultBounds={bounds}></Rectangle>
+				{vehicles?.map((v) => <Marker label={v.description} position={new google.maps.LatLng(v.latitude, v.longitude)}></Marker>)}
+				<TrafficLayer autoUpdate />
 			</GoogleMap>
-			{vehicles && vehicles?.length > 200 && <p>only 200 shown for perf reasons!</p>}
 		</>
 	);
 });

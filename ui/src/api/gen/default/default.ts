@@ -5,24 +5,22 @@
  * OpenAPI spec version: 0.0.1
  */
 import { useQuery } from "@tanstack/react-query";
-import type { UseQueryOptions, QueryFunction, UseQueryResult, QueryKey } from "@tanstack/react-query";
-import type { SessionSchema, VehiclesSchema, GetApiVehicleParams } from ".././schemas";
+import type { QueryFunction, QueryKey, UseQueryOptions, UseQueryResult } from "@tanstack/react-query";
+import type { GetApiVehicleParams, SessionResponseSchema, TokenResponseSchema, VehiclesResponseSchema } from ".././schemas";
 import { requestClient } from "../../client";
 import { defaultQueryOptions } from "../../defaultQueryOptions";
 
-type AwaitedInput<T> = PromiseLike<T> | T;
-
-type Awaited<O> = O extends AwaitedInput<infer T> ? T : never;
-
 export const getApiSession = (signal?: AbortSignal) => {
-	return requestClient<SessionSchema["sessionResponseSchema"]>({ url: `/api/session/`, method: "get", signal });
+	return requestClient<SessionResponseSchema>({ url: `/api/session/`, method: "GET", signal });
 };
 
-export const getGetApiSessionQueryKey = () => [`/api/session/`] as const;
+export const getGetApiSessionQueryKey = () => {
+	return [`/api/session/`] as const;
+};
 
 export const useGetApiSessionQueryOptions = <TData = Awaited<ReturnType<typeof getApiSession>>, TError = unknown>(options?: {
 	query?: UseQueryOptions<Awaited<ReturnType<typeof getApiSession>>, TError, TData>;
-}): UseQueryOptions<Awaited<ReturnType<typeof getApiSession>>, TError, TData> & { queryKey: QueryKey } => {
+}) => {
 	const { query: queryOptions } = options ?? {};
 
 	const queryKey = queryOptions?.queryKey ?? getGetApiSessionQueryKey();
@@ -31,7 +29,7 @@ export const useGetApiSessionQueryOptions = <TData = Awaited<ReturnType<typeof g
 
 	const customOptions = defaultQueryOptions({ ...queryOptions, queryKey, queryFn });
 
-	return customOptions;
+	return customOptions as UseQueryOptions<Awaited<ReturnType<typeof getApiSession>>, TError, TData> & { queryKey: QueryKey };
 };
 
 export type GetApiSessionQueryResult = NonNullable<Awaited<ReturnType<typeof getApiSession>>>;
@@ -50,14 +48,16 @@ export const useGetApiSession = <TData = Awaited<ReturnType<typeof getApiSession
 };
 
 export const getApiSessionToken = (signal?: AbortSignal) => {
-	return requestClient<SessionSchema["tokenResponseSchema"]>({ url: `/api/session/token`, method: "get", signal });
+	return requestClient<TokenResponseSchema>({ url: `/api/session/token`, method: "GET", signal });
 };
 
-export const getGetApiSessionTokenQueryKey = () => [`/api/session/token`] as const;
+export const getGetApiSessionTokenQueryKey = () => {
+	return [`/api/session/token`] as const;
+};
 
 export const useGetApiSessionTokenQueryOptions = <TData = Awaited<ReturnType<typeof getApiSessionToken>>, TError = unknown>(options?: {
 	query?: UseQueryOptions<Awaited<ReturnType<typeof getApiSessionToken>>, TError, TData>;
-}): UseQueryOptions<Awaited<ReturnType<typeof getApiSessionToken>>, TError, TData> & { queryKey: QueryKey } => {
+}) => {
 	const { query: queryOptions } = options ?? {};
 
 	const queryKey = queryOptions?.queryKey ?? getGetApiSessionTokenQueryKey();
@@ -66,7 +66,7 @@ export const useGetApiSessionTokenQueryOptions = <TData = Awaited<ReturnType<typ
 
 	const customOptions = defaultQueryOptions({ ...queryOptions, queryKey, queryFn });
 
-	return customOptions;
+	return customOptions as UseQueryOptions<Awaited<ReturnType<typeof getApiSessionToken>>, TError, TData> & { queryKey: QueryKey };
 };
 
 export type GetApiSessionTokenQueryResult = NonNullable<Awaited<ReturnType<typeof getApiSessionToken>>>;
@@ -85,15 +85,17 @@ export const useGetApiSessionToken = <TData = Awaited<ReturnType<typeof getApiSe
 };
 
 export const getApiVehicle = (params: GetApiVehicleParams, signal?: AbortSignal) => {
-	return requestClient<VehiclesSchema["vehiclesResponseSchema"]>({ url: `/api/vehicle/`, method: "get", params, signal });
+	return requestClient<VehiclesResponseSchema>({ url: `/api/vehicle/`, method: "GET", params, signal });
 };
 
-export const getGetApiVehicleQueryKey = (params: GetApiVehicleParams) => [`/api/vehicle/`, ...(params ? [params] : [])] as const;
+export const getGetApiVehicleQueryKey = (params: GetApiVehicleParams) => {
+	return [`/api/vehicle/`, ...(params ? [params] : [])] as const;
+};
 
 export const useGetApiVehicleQueryOptions = <TData = Awaited<ReturnType<typeof getApiVehicle>>, TError = unknown>(
 	params: GetApiVehicleParams,
 	options?: { query?: UseQueryOptions<Awaited<ReturnType<typeof getApiVehicle>>, TError, TData> },
-): UseQueryOptions<Awaited<ReturnType<typeof getApiVehicle>>, TError, TData> & { queryKey: QueryKey } => {
+) => {
 	const { query: queryOptions } = options ?? {};
 
 	const queryKey = queryOptions?.queryKey ?? getGetApiVehicleQueryKey(params);
@@ -102,7 +104,7 @@ export const useGetApiVehicleQueryOptions = <TData = Awaited<ReturnType<typeof g
 
 	const customOptions = defaultQueryOptions({ ...queryOptions, queryKey, queryFn });
 
-	return customOptions;
+	return customOptions as UseQueryOptions<Awaited<ReturnType<typeof getApiVehicle>>, TError, TData> & { queryKey: QueryKey };
 };
 
 export type GetApiVehicleQueryResult = NonNullable<Awaited<ReturnType<typeof getApiVehicle>>>;

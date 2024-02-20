@@ -4,10 +4,10 @@
  * HSL Realtime
  * OpenAPI spec version: 0.0.1
  */
-import type { VehiclesSchemaVehiclesResponseSchemaItem } from "./vehiclesSchemaVehiclesResponseSchemaItem";
 import type { VehiclesSchemaVehiclesRequestSchema } from "./vehiclesSchemaVehiclesRequestSchema";
+import type { VehiclesSchemaVehiclesResponseSchemaItem } from "./vehiclesSchemaVehiclesResponseSchemaItem";
 
 export interface VehiclesSchema {
-	vehiclesResponseSchema: VehiclesSchemaVehiclesResponseSchemaItem[];
 	vehiclesRequestSchema: VehiclesSchemaVehiclesRequestSchema;
+	vehiclesResponseSchema: VehiclesSchemaVehiclesResponseSchemaItem[];
 }

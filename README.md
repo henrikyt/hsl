@@ -1,10 +1,11 @@
 # HSL live activity demo
 
 [DEMO](https://hsl.ubi.dynu.com/)
+[OAS](https://hsl.ubi.dynu.com/doc)
 
 ## Plan
 
-Utilize [HSL realtime positional data]() to display vehicle positioning in a map. User should be able to position a rectangle within the vehicles are tracked.
+Utilize [HSL realtime positional data](https://digitransit.fi/en/developers/apis/4-realtime-api/vehicle-positions/) to display vehicle positioning in a map. User should be able to position a rectangle within the vehicles are tracked.
 
 ## Stack
 
@@ -60,17 +61,41 @@ ui<--server : real time vehicle data
 
 ![componenes](./sq.jpg)
 
+## Schemas
+
+See prisma file for details
+
+Vehicle 
+````
+  id             String @id @unique > vehicle id + operator as vehicle id not unique in HSL
+  ... vehicle data, see HSL ...
+````
+
+Session
+````
+  id             String @id @unique > session cookie
+  latitudeStart  Float? > for bounding box in UI
+  longitudeStart Float? > for bounding box in UI
+  latitudeEnd    Float? > for bounding box in UI
+  longitudeEnd   Float? > for bounding box in UI
+````
+
 ## Todo
 
-- add UI e2e tests
-- add UI unit tests
+- add more UI e2e tests
+- add more UI unit tests
 - send updates to clients via Websocket instead of polling
 - wire mock server to UI
-- remove 200 vehicle limit
-- queue mq > db
+- implement service down when mq not responsive
 
 ## Local environment setup
 
 - Node => 18.13.0
 - pnpm (`npm i -g pnpm`)
-- update dev variables to .env
+- add .env files if overrides needed
+- exec `pnpm start`
+
+## Running in local docker
+
+- `docker build . -t TAG`
+- `docker run -d TAG`

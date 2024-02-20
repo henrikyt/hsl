@@ -1,5 +1,5 @@
 import { QueryObserver, useQueryClient } from "@tanstack/react-query";
-import { FunctionComponent, useEffect, useState } from "react";
+import { FunctionComponent, ReactNode, useEffect, useState } from "react";
 import { VehiclesSchemaVehiclesResponseSchemaItem } from "../../api/gen";
 import { makeStyles } from "../../util/theme";
 
@@ -42,6 +42,27 @@ export const operatorMap = {
 	195: "Siuntio1",
 };
 
+const vehicleStatusMap = {
+	vp: "Vehicle position",
+	due: "Vehicle will soon arrive to a stop",
+	arr: "Vehicle arrives inside of a stop radius",
+	dep: "Vehicle departs from a stop and leaves the stop radius",
+	ars: "Vehicle has arrived to a stop",
+	pde: "Vehicle is ready to depart from a stop",
+	pas: "Vehicle passes through a stop without stopping",
+	wait: "Vehicle is waiting at a stop",
+	doo: "Doors of the vehicle are opened",
+	doc: "Doors of the vehicle are closed",
+	tlr: "Vehicle is requesting traffic light priority",
+	tla: "Vehicle receives a response to traffic light priority request",
+	da: "Driver signs in to the vehicle",
+	dout: "Driver signs out of the vehicle",
+	ba: "Driver selects the block that the vehicle will run",
+	bout: "Driver signs out from the selected block (usually from a depot)",
+	"vja  ": "Vehicle signs in to a service journey (i.e. a single public transport journey from location A to location B, also known as trip)",
+	vjout: "Vehicle signs off from a service journey, after reaching the final stop",
+};
+
 type Vehicles = VehiclesSchemaVehiclesResponseSchemaItem[];
 
 export const VehicleDetails: FunctionComponent = () => {
@@ -58,10 +79,12 @@ export const VehicleDetails: FunctionComponent = () => {
 	if (!vehicles || vehicles.length === 0) return;
 	const headers = Object.keys(vehicles[0]);
 
-	const renderCell = (k: string, d: unknown): string => {
+	const renderCell = (k: string, d: unknown): string | ReactNode => {
 		switch (k) {
 			case "operator":
 				return operatorMap[d as keyof typeof operatorMap];
+			case "state":
+				return <div title={vehicleStatusMap[(d as string).toLocaleLowerCase() as keyof typeof vehicleStatusMap]}>{d as string}</div>;
 			case "doorStatus":
 				return d === 1 ? "open" : "closed";
 			case "vehicleTime":

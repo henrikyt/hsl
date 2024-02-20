@@ -21,7 +21,7 @@ export async function getVehiclesHandler(req: FastifyRequest<{ Querystring: Lati
 				oldSession.longitudeEnd !== longitudeEnd ||
 				oldSession.longitudeStart !== longitudeStart))
 	) {
-		if (latitudeEnd && latitudeStart && longitudeEnd && longitudeStart) hsl.startTracking(req.query, token);
+		hsl.startTracking(req.query, token);
 	}
 	return vehicles;
 }

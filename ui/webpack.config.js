@@ -9,7 +9,7 @@ const Dotenv = require("dotenv-webpack");
 USE_DEV_TOOLS = process.env.NODE_ENV === "development";
 
 const proxy = {
-	"/api": "http://localhost:3000",
+	"/api": { target: "http://127.0.0.1:3500/", secure: false, changeOrigin: true },
 };
 
 /** @type {import("webpack").Configuration} */
@@ -58,6 +58,7 @@ module.exports = {
 		historyApiFallback: true,
 		hot: USE_DEV_TOOLS,
 		static: ["src/assets/static"],
+		proxy,
 	},
 	devtool: USE_DEV_TOOLS ? "eval-cheap-module-source-map" : "source-map",
 	module: {

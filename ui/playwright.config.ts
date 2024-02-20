@@ -22,7 +22,7 @@ export default defineConfig({
 		? [
 				["html", { open: "never", outputFile: "report.html", outputFolder: "test-report/report" }],
 				["junit", { outputFile: "pw-report.xml" }],
-		  ]
+			]
 		: "line",
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 	use: {
@@ -31,7 +31,7 @@ export default defineConfig({
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
 		trace: "on-first-retry",
 		// Tell all tests to load signed-in state from 'storageState.json'.
-		storageState: "out/storageState.json",
+		// storageState: "out/storageState.json",
 		bypassCSP: true,
 	},
 
@@ -72,7 +72,7 @@ export default defineConfig({
 				//   name: 'Google Chrome',
 				//   use: { ..devices['Desktop Chrome'], channel: 'chrome' },
 				// },
-		  ]
+			]
 		: undefined,
 
 	/* Run your local dev server before starting the tests */
@@ -81,5 +81,5 @@ export default defineConfig({
 		: {
 				command: "pnpm dev",
 				reuseExistingServer: true,
-		  },
+			},
 });

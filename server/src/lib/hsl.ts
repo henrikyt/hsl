@@ -4,6 +4,7 @@ import { updateVehicles } from "../modules/vehicle/vehicle.service";
 import { Log } from "../utils/log";
 import { bbox2geohashes } from "../utils/geohash";
 import { LatitudeParams } from "../modules/session/session.schema";
+import { UpdateVehiclesParams } from "../modules/vehicle/vehicle.schema";
 
 type HSLMessage = {
 	desi: string;
@@ -39,15 +40,31 @@ type Coords = {
 	longitudeEnd: number;
 };
 
+// For handling MQ updates from HSL
 class HSLClient {
 	client: MqttClient | undefined;
 	log = Log("HSLClient");
 	subscriptions = new Map<string, string[]>();
+	queue: UpdateVehiclesParams = [];
+	timer: NodeJS.Timeout | undefined;
 
 	async connect() {
 		this.client = await connectAsync({ host: "mqtt.hsl.fi", port: 8883, protocol: "mqtts" });
-		this.client.on("message", this.onMessage);
+		this.client.on("message", (topic: string, message: Buffer) => this.onMessage(topic, message));
 		this.log("connected");
+		this.processQueue();
+	}
+
+	async processQueue() {
+		if (this.queue.length > 0) {
+			const update: UpdateVehiclesParams = [];
+			this.queue.reverse().forEach((up) => {
+				if (!update.some((v) => v.id === up.id)) update.push(up);
+			});
+			this.queue = [];
+			await updateVehicles(update);
+		}
+		this.timer = setTimeout(() => this.processQueue(), 1000);
 	}
 
 	onMessage(topic: string, message: Buffer) {
@@ -76,23 +93,27 @@ class HSLClient {
 			arrival: msg.ttarr,
 			departure: msg.ttdep,
 		};
-		updateVehicles([update]);
+		this.queue.push(update);
 	}
 
 	async disconnect() {
+		// process the queue and clear timeouts
+		clearTimeout(this.timer);
+		this.processQueue();
+		clearTimeout(this.timer);
 		await this.client?.endAsync();
 		this.log("disconnected");
 	}
 
 	async subscribe(topic: string | string[] | undefined) {
 		if (!topic) return;
-		this.log("subscribe", topic);
+		this.log.debug("subscribe", topic);
 		return await this.client?.subscribeAsync(topic);
 	}
 
 	async unsubscribe(topic: string | string[] | undefined) {
 		if (!topic) return;
-		this.log("unsubscribe", topic);
+		this.log.debug("unsubscribe", topic);
 		return await this.client?.unsubscribeAsync(topic);
 	}
 

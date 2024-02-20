@@ -6,9 +6,8 @@
  */
 
 export type VehiclesSchemaVehiclesRequestSchema = {
-	latitudeStart?: number;
-	longitudeStart?: number;
 	latitudeEnd?: number;
+	latitudeStart?: number;
 	longitudeEnd?: number;
-	since?: string;
+	longitudeStart?: number;
 };

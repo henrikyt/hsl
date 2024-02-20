@@ -1,6 +1,9 @@
 {
 	"openapi": "3.0.3",
-	"info": { "title": "HSL Realtime", "version": "0.0.1" },
+	"info": {
+		"title": "HSL Realtime",
+		"version": "0.0.1"
+	},
 	"components": {
 		"schemas": {
 			"vehiclesSchema": {
@@ -11,7 +14,9 @@
 						"items": {
 							"type": "object",
 							"properties": {
-								"id": { "type": "string" },
+								"id": {
+									"type": "string"
+								},
 								"state": {
 									"type": "string",
 									"enum": [
@@ -35,24 +40,62 @@
 										"VJOUT"
 									]
 								},
-								"description": { "type": "string" },
-								"operator": { "type": "number" },
-								"vehicleId": { "type": "number" },
-								"vehicleTime": { "type": "string" },
-								"speed": { "type": "number" },
-								"heading": { "type": "number" },
-								"latitude": { "type": "number" },
-								"longitude": { "type": "number" },
-								"acceleration": { "type": "number" },
-								"scheduleOffset": { "type": "number" },
-								"odometer": { "type": "number" },
-								"doorStatus": { "type": "number" },
-								"start": { "type": "string" },
-								"stoppedAt": { "type": "string" },
-								"route": { "type": "string" },
-								"occupancy": { "type": "number" },
-								"arrival": { "type": "string", "format": "date-time" },
-								"departure": { "type": "string", "format": "date-time" }
+								"description": {
+									"type": "string"
+								},
+								"operator": {
+									"type": "number"
+								},
+								"vehicleId": {
+									"type": "number"
+								},
+								"vehicleTime": {
+									"type": "string"
+								},
+								"speed": {
+									"type": "number"
+								},
+								"heading": {
+									"type": "number"
+								},
+								"latitude": {
+									"type": "number"
+								},
+								"longitude": {
+									"type": "number"
+								},
+								"acceleration": {
+									"type": "number"
+								},
+								"scheduleOffset": {
+									"type": "number"
+								},
+								"odometer": {
+									"type": "number"
+								},
+								"doorStatus": {
+									"type": "number"
+								},
+								"start": {
+									"type": "string"
+								},
+								"stoppedAt": {
+									"type": "string"
+								},
+								"route": {
+									"type": "string"
+								},
+								"occupancy": {
+									"type": "number"
+								},
+								"arrival": {
+									"type": "string",
+									"format": "date-time"
+								},
+								"departure": {
+									"type": "string",
+									"format": "date-time"
+								}
 							},
 							"required": ["id", "state", "operator", "vehicleId", "vehicleTime"],
 							"additionalProperties": false
@@ -61,11 +104,18 @@
 					"vehiclesRequestSchema": {
 						"type": "object",
 						"properties": {
-							"latitudeStart": { "type": "number" },
-							"longitudeStart": { "type": "number" },
-							"latitudeEnd": { "type": "number" },
-							"longitudeEnd": { "type": "number" },
-							"since": { "type": "string", "format": "date-time" }
+							"latitudeStart": {
+								"type": "number"
+							},
+							"longitudeStart": {
+								"type": "number"
+							},
+							"latitudeEnd": {
+								"type": "number"
+							},
+							"longitudeEnd": {
+								"type": "number"
+							}
 						},
 						"additionalProperties": false
 					}
@@ -79,17 +129,29 @@
 					"sessionResponseSchema": {
 						"type": "object",
 						"properties": {
-							"latitudeStart": { "type": "number" },
-							"longitudeStart": { "type": "number" },
-							"latitudeEnd": { "type": "number" },
-							"longitudeEnd": { "type": "number" }
+							"latitudeStart": {
+								"type": "number"
+							},
+							"longitudeStart": {
+								"type": "number"
+							},
+							"latitudeEnd": {
+								"type": "number"
+							},
+							"longitudeEnd": {
+								"type": "number"
+							}
 						},
 						"required": ["latitudeStart", "longitudeStart", "latitudeEnd", "longitudeEnd"],
 						"additionalProperties": false
 					},
 					"tokenResponseSchema": {
 						"type": "object",
-						"properties": { "status": { "type": "string" } },
+						"properties": {
+							"status": {
+								"type": "string"
+							}
+						},
 						"required": ["status"],
 						"additionalProperties": false
 					}
@@ -105,7 +167,13 @@
 				"responses": {
 					"200": {
 						"description": "Default Response",
-						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/sessionSchema/properties/sessionResponseSchema" } } }
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/sessionSchema/properties/sessionResponseSchema"
+								}
+							}
+						}
 					}
 				}
 			}
@@ -115,7 +183,13 @@
 				"responses": {
 					"200": {
 						"description": "Default Response",
-						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/sessionSchema/properties/tokenResponseSchema" } } }
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/sessionSchema/properties/tokenResponseSchema"
+								}
+							}
+						}
 					}
 				}
 			}
@@ -123,15 +197,49 @@
 		"/api/vehicle/": {
 			"get": {
 				"parameters": [
-					{ "schema": { "type": "number" }, "in": "query", "name": "latitudeStart", "required": true },
-					{ "schema": { "type": "number" }, "in": "query", "name": "longitudeStart", "required": true },
-					{ "schema": { "type": "number" }, "in": "query", "name": "latitudeEnd", "required": true },
-					{ "schema": { "type": "number" }, "in": "query", "name": "longitudeEnd", "required": true }
+					{
+						"schema": {
+							"type": "number"
+						},
+						"in": "query",
+						"name": "latitudeStart",
+						"required": true
+					},
+					{
+						"schema": {
+							"type": "number"
+						},
+						"in": "query",
+						"name": "longitudeStart",
+						"required": true
+					},
+					{
+						"schema": {
+							"type": "number"
+						},
+						"in": "query",
+						"name": "latitudeEnd",
+						"required": true
+					},
+					{
+						"schema": {
+							"type": "number"
+						},
+						"in": "query",
+						"name": "longitudeEnd",
+						"required": true
+					}
 				],
 				"responses": {
 					"200": {
 						"description": "Default Response",
-						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/vehiclesSchema/properties/vehiclesResponseSchema" } } }
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/vehiclesSchema/properties/vehiclesResponseSchema"
+								}
+							}
+						}
 					}
 				}
 			}

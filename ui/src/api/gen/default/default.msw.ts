@@ -4,21 +4,41 @@
  * HSL Realtime
  * OpenAPI spec version: 0.0.1
  */
-import { rest } from "msw";
 import { faker } from "@faker-js/faker";
+import { HttpResponse, delay, http } from "msw";
+import type { SessionResponseSchema, TokenResponseSchema, VehiclesResponseSchema } from ".././schemas";
 
-export const getGetApiSessionMock = () => ({
-	latitudeStart: faker.datatype.number({ min: undefined, max: undefined }),
-	longitudeStart: faker.datatype.number({ min: undefined, max: undefined }),
-	latitudeEnd: faker.datatype.number({ min: undefined, max: undefined }),
-	longitudeEnd: faker.datatype.number({ min: undefined, max: undefined }),
+export const getGetApiSessionResponseMock = (overrideResponse: any = {}): SessionResponseSchema => ({
+	latitudeEnd: faker.number.int({ min: undefined, max: undefined }),
+	latitudeStart: faker.number.int({ min: undefined, max: undefined }),
+	longitudeEnd: faker.number.int({ min: undefined, max: undefined }),
+	longitudeStart: faker.number.int({ min: undefined, max: undefined }),
+	...overrideResponse,
 });
 
-export const getGetApiSessionTokenMock = () => ({ status: faker.random.word() });
+export const getGetApiSessionTokenResponseMock = (overrideResponse: any = {}): TokenResponseSchema => ({
+	status: faker.word.sample(),
+	...overrideResponse,
+});
 
-export const getGetApiVehicleMock = () =>
-	Array.from({ length: faker.datatype.number({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({
-		id: faker.random.word(),
+export const getGetApiVehicleResponseMock = (overrideResponse: any = {}): VehiclesResponseSchema =>
+	Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({
+		acceleration: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+		arrival: faker.helpers.arrayElement([`${faker.date.past().toISOString().split(".")[0]}Z`, undefined]),
+		departure: faker.helpers.arrayElement([`${faker.date.past().toISOString().split(".")[0]}Z`, undefined]),
+		description: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+		doorStatus: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+		heading: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+		id: faker.word.sample(),
+		latitude: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+		longitude: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+		occupancy: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+		odometer: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+		operator: faker.number.int({ min: undefined, max: undefined }),
+		route: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+		scheduleOffset: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+		speed: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+		start: faker.helpers.arrayElement([faker.word.sample(), undefined]),
 		state: faker.helpers.arrayElement([
 			"VP",
 			"DUE",
@@ -38,35 +58,46 @@ export const getGetApiVehicleMock = () =>
 			"BOUT",
 			"VJA",
 			"VJOUT",
-		]),
-		description: faker.helpers.arrayElement([faker.random.word(), undefined]),
-		operator: faker.datatype.number({ min: undefined, max: undefined }),
-		vehicleId: faker.datatype.number({ min: undefined, max: undefined }),
-		vehicleTime: faker.random.word(),
-		speed: faker.helpers.arrayElement([faker.datatype.number({ min: undefined, max: undefined }), undefined]),
-		heading: faker.helpers.arrayElement([faker.datatype.number({ min: undefined, max: undefined }), undefined]),
-		latitude: faker.helpers.arrayElement([faker.datatype.number({ min: undefined, max: undefined }), undefined]),
-		longitude: faker.helpers.arrayElement([faker.datatype.number({ min: undefined, max: undefined }), undefined]),
-		acceleration: faker.helpers.arrayElement([faker.datatype.number({ min: undefined, max: undefined }), undefined]),
-		scheduleOffset: faker.helpers.arrayElement([faker.datatype.number({ min: undefined, max: undefined }), undefined]),
-		odometer: faker.helpers.arrayElement([faker.datatype.number({ min: undefined, max: undefined }), undefined]),
-		doorStatus: faker.helpers.arrayElement([faker.datatype.number({ min: undefined, max: undefined }), undefined]),
-		start: faker.helpers.arrayElement([faker.random.word(), undefined]),
-		stoppedAt: faker.helpers.arrayElement([faker.random.word(), undefined]),
-		route: faker.helpers.arrayElement([faker.random.word(), undefined]),
-		occupancy: faker.helpers.arrayElement([faker.datatype.number({ min: undefined, max: undefined }), undefined]),
-		arrival: faker.helpers.arrayElement([`${faker.date.past().toISOString().split(".")[0]}Z`, undefined]),
-		departure: faker.helpers.arrayElement([`${faker.date.past().toISOString().split(".")[0]}Z`, undefined]),
+		] as const),
+		stoppedAt: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+		vehicleId: faker.number.int({ min: undefined, max: undefined }),
+		vehicleTime: faker.word.sample(),
+		...overrideResponse,
 	}));
 
-export const getDefaultMSW = () => [
-	rest.get("*/api/session/", (_req, res, ctx) => {
-		return res(ctx.delay(0), ctx.status(200, "Mocked status"), ctx.json(getGetApiSessionMock()));
-	}),
-	rest.get("*/api/session/token", (_req, res, ctx) => {
-		return res(ctx.delay(0), ctx.status(200, "Mocked status"), ctx.json(getGetApiSessionTokenMock()));
-	}),
-	rest.get("*/api/vehicle/", (_req, res, ctx) => {
-		return res(ctx.delay(0), ctx.status(200, "Mocked status"), ctx.json(getGetApiVehicleMock()));
-	}),
-];
+export const getGetApiSessionMockHandler = (overrideResponse?: SessionResponseSchema) => {
+	return http.get("*/api/session/", async () => {
+		await delay(0);
+		return new HttpResponse(JSON.stringify(overrideResponse ? overrideResponse : getGetApiSessionResponseMock()), {
+			status: 200,
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+	});
+};
+
+export const getGetApiSessionTokenMockHandler = (overrideResponse?: TokenResponseSchema) => {
+	return http.get("*/api/session/token", async () => {
+		await delay(0);
+		return new HttpResponse(JSON.stringify(overrideResponse ? overrideResponse : getGetApiSessionTokenResponseMock()), {
+			status: 200,
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+	});
+};
+
+export const getGetApiVehicleMockHandler = (overrideResponse?: VehiclesResponseSchema) => {
+	return http.get("*/api/vehicle/", async () => {
+		await delay(0);
+		return new HttpResponse(JSON.stringify(overrideResponse ? overrideResponse : getGetApiVehicleResponseMock()), {
+			status: 200,
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+	});
+};
+export const getDefaultMock = () => [getGetApiSessionMockHandler(), getGetApiSessionTokenMockHandler(), getGetApiVehicleMockHandler()];
