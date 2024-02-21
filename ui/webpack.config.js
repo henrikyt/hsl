@@ -6,7 +6,7 @@ const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const Dotenv = require("dotenv-webpack");
 
-USE_DEV_TOOLS = process.env.NODE_ENV === "development";
+USE_DEV_TOOLS = process.env.NODE_ENV !== "production";
 
 const proxy = {
 	"/api": { target: "http://127.0.0.1:3500/", secure: false, changeOrigin: true },
@@ -26,7 +26,7 @@ module.exports = {
 		publicPath: "auto",
 	},
 	plugins: [
-		new Dotenv(),
+		new Dotenv({ systemvars: true }),
 		new CopyPlugin({
 			patterns: [
 				{

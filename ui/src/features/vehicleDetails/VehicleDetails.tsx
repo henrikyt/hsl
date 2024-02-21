@@ -59,7 +59,7 @@ const vehicleStatusMap = {
 	dout: "Driver signs out of the vehicle",
 	ba: "Driver selects the block that the vehicle will run",
 	bout: "Driver signs out from the selected block (usually from a depot)",
-	"vja  ": "Vehicle signs in to a service journey (i.e. a single public transport journey from location A to location B, also known as trip)",
+	vja: "Vehicle signs in to a service journey (i.e. a single public transport journey from location A to location B, also known as trip)",
 	vjout: "Vehicle signs off from a service journey, after reaching the final stop",
 };
 

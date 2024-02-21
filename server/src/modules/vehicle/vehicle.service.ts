@@ -24,7 +24,7 @@ export function getVehicles(params: GetVehiclesParams, since?: Date) {
 				longitude: { gte: longitudeStart, lte: longitudeEnd },
 				vehicleTime: { gte: since },
 			},
-			orderBy: { id: "asc" }
+			orderBy: { id: "asc" },
 		});
 	} else {
 		return prisma.vehicle;

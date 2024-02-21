@@ -1,9 +1,13 @@
 // @ts-nocheck
 import debounce from "lodash/debounce";
-import { useRef, useState } from "react";
+import { FunctionComponent, useMemo, useRef, useState } from "react";
 import { GoogleMap, Marker, Rectangle, TrafficLayer, withGoogleMap, withScriptjs } from "react-google-maps";
 import { compose, withProps } from "recompose";
 import { useGetApiVehicle } from "../../api/gen";
+
+type Props = {
+	initialCoords?: Coords;
+};
 
 type Coords = {
 	latitudeStart: number;
@@ -12,7 +16,7 @@ type Coords = {
 	longitudeEnd: number;
 };
 
-export const VehicleMap = compose(
+export const VehicleMap: FunctionComponent<Props> = compose(
 	withProps({
 		googleMapURL: "https://maps.googleapis.com/maps/api/js?key=" + process.env.API_KEY_GMAP + "&v=3.exp&libraries=geometry,drawing,places",
 		loadingElement: <div style={{ height: `100%` }} />,
@@ -29,7 +33,7 @@ export const VehicleMap = compose(
 		longitudeEnd: props.initialCoords?.longitudeEnd || 24.951252288818,
 	});
 
-	const { data: vehicles } = useGetApiVehicle(cords, { query: { refetchInterval: 500, queryKey: ["myVehicles"] } });
+	const { data: vehicles, dataUpdatedAt } = useGetApiVehicle(cords, { query: { refetchInterval: 1000, queryKey: ["myVehicles"] } });
 	const ref = useRef<any>();
 
 	const debouncedSearch = debounce(async () => {
@@ -50,6 +54,12 @@ export const VehicleMap = compose(
 		debouncedSearch();
 	};
 
+	// memoize markers
+	const markers = useMemo(
+		() => vehicles?.map((v) => <Marker label={v.description} position={new google.maps.LatLng(v.latitude, v.longitude)}></Marker>),
+		[dataUpdatedAt],
+	);
+
 	// get initial box
 	const bounds = new google.maps.LatLngBounds(
 		new google.maps.LatLng(cords.latitudeStart, cords.longitudeStart),
@@ -57,12 +67,10 @@ export const VehicleMap = compose(
 	);
 
 	return (
-		<>
-			<GoogleMap defaultZoom={14} defaultCenter={{ lat: 60.163693147166, lng: 24.948047714233 }}>
-				<Rectangle ref={ref} data-testid="selector" onBoundsChanged={onBoundsChanged} draggable editable defaultBounds={bounds}></Rectangle>
-				{vehicles?.map((v) => <Marker label={v.description} position={new google.maps.LatLng(v.latitude, v.longitude)}></Marker>)}
-				<TrafficLayer autoUpdate />
-			</GoogleMap>
-		</>
+		<GoogleMap defaultZoom={14} defaultCenter={{ lat: 60.163693147166, lng: 24.948047714233 }}>
+			<Rectangle ref={ref} data-testid="selector" onBoundsChanged={onBoundsChanged} draggable editable defaultBounds={bounds}></Rectangle>
+			{markers}
+			<TrafficLayer autoUpdate />
+		</GoogleMap>
 	);
 });

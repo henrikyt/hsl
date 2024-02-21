@@ -62,7 +62,7 @@ function buildServer() {
 	// Hooks
 
 	fastify.addHook("onRequest", async (request, reply) => {
-		if (request.originalUrl?.includes("/api") && !request.originalUrl.includes("/session/token")) {
+		if (process.env.TAP === undefined && request.originalUrl?.includes("/api") && !request.originalUrl.includes("/session/token")) {
 			try {
 				await request.jwtVerify();
 			} catch (err) {

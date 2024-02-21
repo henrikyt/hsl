@@ -6,9 +6,9 @@
  */
 import { faker } from "@faker-js/faker";
 import { HttpResponse, delay, http } from "msw";
-import type { SessionResponseSchema, TokenResponseSchema, VehiclesResponseSchema } from ".././schemas";
+import type { SessionSchema, VehiclesSchema } from ".././schemas";
 
-export const getGetApiSessionResponseMock = (overrideResponse: any = {}): SessionResponseSchema => ({
+export const getGetApiSessionResponseMock = (overrideResponse: any = {}): SessionSchema["sessionResponseSchema"] => ({
 	latitudeEnd: faker.number.int({ min: undefined, max: undefined }),
 	latitudeStart: faker.number.int({ min: undefined, max: undefined }),
 	longitudeEnd: faker.number.int({ min: undefined, max: undefined }),
@@ -16,12 +16,12 @@ export const getGetApiSessionResponseMock = (overrideResponse: any = {}): Sessio
 	...overrideResponse,
 });
 
-export const getGetApiSessionTokenResponseMock = (overrideResponse: any = {}): TokenResponseSchema => ({
+export const getGetApiSessionTokenResponseMock = (overrideResponse: any = {}): SessionSchema["tokenResponseSchema"] => ({
 	status: faker.word.sample(),
 	...overrideResponse,
 });
 
-export const getGetApiVehicleResponseMock = (overrideResponse: any = {}): VehiclesResponseSchema =>
+export const getGetApiVehicleResponseMock = (overrideResponse: any = {}): VehiclesSchema["vehiclesResponseSchema"] =>
 	Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({
 		acceleration: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
 		arrival: faker.helpers.arrayElement([`${faker.date.past().toISOString().split(".")[0]}Z`, undefined]),
@@ -65,8 +65,8 @@ export const getGetApiVehicleResponseMock = (overrideResponse: any = {}): Vehicl
 		...overrideResponse,
 	}));
 
-export const getGetApiSessionMockHandler = (overrideResponse?: SessionResponseSchema) => {
-	return http.get("*/api/session/", async () => {
+export const getGetApiSessionMockHandler = (overrideResponse?: SessionSchema["sessionResponseSchema"]) => {
+	return http.get("*/api/session", async () => {
 		await delay(0);
 		return new HttpResponse(JSON.stringify(overrideResponse ? overrideResponse : getGetApiSessionResponseMock()), {
 			status: 200,
@@ -77,7 +77,7 @@ export const getGetApiSessionMockHandler = (overrideResponse?: SessionResponseSc
 	});
 };
 
-export const getGetApiSessionTokenMockHandler = (overrideResponse?: TokenResponseSchema) => {
+export const getGetApiSessionTokenMockHandler = (overrideResponse?: SessionSchema["tokenResponseSchema"]) => {
 	return http.get("*/api/session/token", async () => {
 		await delay(0);
 		return new HttpResponse(JSON.stringify(overrideResponse ? overrideResponse : getGetApiSessionTokenResponseMock()), {
@@ -89,8 +89,8 @@ export const getGetApiSessionTokenMockHandler = (overrideResponse?: TokenRespons
 	});
 };
 
-export const getGetApiVehicleMockHandler = (overrideResponse?: VehiclesResponseSchema) => {
-	return http.get("*/api/vehicle/", async () => {
+export const getGetApiVehicleMockHandler = (overrideResponse?: VehiclesSchema["vehiclesResponseSchema"]) => {
+	return http.get("*/api/vehicle", async () => {
 		await delay(0);
 		return new HttpResponse(JSON.stringify(overrideResponse ? overrideResponse : getGetApiVehicleResponseMock()), {
 			status: 200,

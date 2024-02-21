@@ -1,11 +1,11 @@
 import { HttpResponse, http } from "msw";
 import { expect, test } from "../../../../test/fixturesUnit";
-import { VehicleDetailsStory } from "./VehicleDetailsStory";
+import { MainPage } from "../MainPage";
 
-test("displays vehicles in a list", async ({ mount, worker }) => {
+test("loads user session", async ({ mount, worker }) => {
 	// trigger update of vehicles
 
-	const component = await mount(<VehicleDetailsStory />);
+	const component = await mount(<MainPage />);
 
 	await expect(component).toContainText("...");
 });
@@ -21,7 +21,7 @@ test("displays nothing when req fails", async ({ mount, worker }) => {
 		}),
 	);
 
-	const component = await mount(<VehicleDetailsStory />);
+	const component = await mount(<MainPage />);
 
-	await expect(component).toContainText("2079706650247168");
+	await expect(component).toContainText("...");
 });

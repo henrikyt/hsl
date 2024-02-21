@@ -348,3 +348,5 @@ $RECYCLE.BIN/
 /.vscode
 /.history
 *.local
+.tap
+test-results

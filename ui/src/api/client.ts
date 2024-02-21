@@ -11,7 +11,7 @@ export const requestClient = async <T>({
 	signal,
 }: {
 	url: string;
-	method: "get" | "post" | "put" | "delete" | "patch";
+	method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 	params?: Record<string, unknown>;
 	data?: Record<string, unknown>;
 	headers?: RequestInit["headers"];

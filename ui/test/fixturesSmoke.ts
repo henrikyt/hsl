@@ -16,7 +16,8 @@ export const test = base.extend<AxeFixture, { workerStorageState: string }>({
 	accessibilityScan: async ({ page }, use, _testInfo) => {
 		const makeAxeBuilder = () => new AxeBuilder({ page });
 		await use(makeAxeBuilder);
-		const accessibilityScanResults = await makeAxeBuilder().include("#container").analyze();
+		const accessibilityScanResults = await makeAxeBuilder().include("#root").analyze();
+		console.log(accessibilityScanResults.violations);
 		expect(accessibilityScanResults.violations).toEqual([]);
 	},
 });

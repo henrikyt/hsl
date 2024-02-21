@@ -7,8 +7,7 @@ type Props = {
 
 export const TokenProvider: FunctionComponent<Props> = ({ children }) => {
 	const { isError: isTokenError, isLoading: isTokenLoading } = useGetApiSessionToken();
-	const { isError, isLoading } = useGetApiSession({ query: { enabled: !isTokenLoading && !isTokenError, refetchInterval: 5000 } });
-
+	const { isError, isLoading } = useGetApiSession({ query: { enabled: !isTokenLoading && !isTokenError, refetchInterval: 15000 } });
 	if (isLoading || isTokenLoading) {
 		return <p>...</p>;
 	}

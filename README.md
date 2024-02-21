@@ -9,7 +9,7 @@ Utilize [HSL realtime positional data](https://digitransit.fi/en/developers/apis
 
 ## Stack
 
-UI: **react** based UI. **react-query** along with **orval** to generate API layer from openAPI. **playwright** for unit/e2e testing. 
+UI: **react** based UI. **react-query** along with **orval** to generate API layer and mocks from openAPI. **playwright** for unit/e2e testing. Unit tests utilize **msw** mocking. 
 
 Server: **prisma** (postgresql) for database management. **fastify** as server middleware. **mqtt** to communicate with HSL. **tap** for unit testing.
 
@@ -82,11 +82,9 @@ Session
 
 ## Todo
 
-- add more UI e2e tests
-- add more UI unit tests
 - send updates to clients via Websocket instead of polling
-- wire mock server to UI
 - implement service down when mq not responsive
+- server side integration tests
 
 ## Local environment setup
 

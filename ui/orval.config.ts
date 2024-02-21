@@ -8,7 +8,7 @@ declare global {
 }
 
 export default defineConfig({
-	agentExperience: {
+	hsl: {
 		input: {
 			target: "./openapi.json",
 		},
