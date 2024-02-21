@@ -1,9 +1,12 @@
 {
-	"name": "fastify-prisma",
+	"name": "@hsl/server",
 	"version": "1.0.0",
-	"main": "index.js",
-	"author": "Tom Nagle",
-	"license": "MIT",
+	"description": "HSL live server",
+	"license": "UNLICENSED",
+	"engines": {
+		"npm": ">=8.0.0",
+		"node": ">=18.0.0"
+	},
 	"scripts": {
 		"start": "pnpm dev",
 		"dev": "tsnd --respawn --transpile-only --exit-child src/app.ts",
