@@ -1,7 +1,8 @@
 import { QueryObserver, useQueryClient } from "@tanstack/react-query";
-import { FunctionComponent, ReactNode, useEffect, useState } from "react";
+import { FunctionComponent, ReactNode, useEffect, useRef, useState } from "react";
 import { VehiclesSchemaVehiclesResponseSchemaItem } from "../../api/gen";
 import { makeStyles } from "../../util/theme";
+import { useVirtualizer } from "@tanstack/react-virtual";
 
 const useStyles = makeStyles()((theme) => ({
 	root: {
@@ -70,6 +71,15 @@ export const VehicleDetails: FunctionComponent = () => {
 	const client = useQueryClient();
 	const [vehicles, setVehicles] = useState<Vehicles>([]);
 
+	const parentRef = useRef<HTMLTableElement | null>(null);
+
+	// perf: only render visible rows
+	const rowVirtualizer = useVirtualizer({
+		count: vehicles.length ?? 0,
+		getScrollElement: () => parentRef.current as Element,
+		estimateSize: () => 38,
+	});
+
 	useEffect(() => {
 		// there should be a way to make a dummy req with same cache as vehicles, but let's go directly to cache for now
 		const observer = new QueryObserver(client, { queryKey: ["myVehicles"] });
@@ -101,20 +111,25 @@ export const VehicleDetails: FunctionComponent = () => {
 
 	return (
 		<div className={classes.root}>
-			<table>
-				<tr>
-					{headers.map((headerKey) => (
-						<th>{headerKey}</th>
-					))}
-				</tr>
-				<tbody>
-					{vehicles.map((vehicle) => (
-						<tr>
-							{Object.keys(vehicle).map((key) => (
-								<td>{renderCell(key, vehicle[key as keyof typeof vehicle])}</td>
-							))}
-						</tr>
-					))}
+			<table ref={parentRef}>
+				<thead>
+					<tr>
+						{headers.map((headerKey) => (
+							<th key={headerKey}>{headerKey}</th>
+						))}
+					</tr>
+				</thead>
+				<tbody style={{ height: rowVirtualizer.getTotalSize() + "px", width: "100%" }}>
+					{rowVirtualizer.getVirtualItems().map((vItem) => {
+						const vehicle = vehicles[vItem.index];
+						return (
+							<tr key={vItem.key}>
+								{Object.keys(vehicle).map((key) => (
+									<td key={key}>{renderCell(key, vehicle[key as keyof typeof vehicle])}</td>
+								))}
+							</tr>
+						);
+					})}
 				</tbody>
 			</table>
 		</div>

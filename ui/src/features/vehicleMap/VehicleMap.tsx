@@ -1,9 +1,8 @@
-// @ts-nocheck
 import debounce from "lodash/debounce";
-import { FunctionComponent, useMemo, useRef, useState } from "react";
-import { GoogleMap, Marker, Rectangle, TrafficLayer, withGoogleMap, withScriptjs } from "react-google-maps";
-import { compose, withProps } from "recompose";
+import { FunctionComponent, useCallback, useMemo, useRef, useState } from "react";
+import { GoogleMap, Marker, RectangleF, TrafficLayer, useJsApiLoader } from "@react-google-maps/api";
 import { useGetApiVehicle } from "../../api/gen";
+import { makeStyles } from "../../util/theme";
 
 type Props = {
 	initialCoords?: Coords;
@@ -16,16 +15,22 @@ type Coords = {
 	longitudeEnd: number;
 };
 
-export const VehicleMap: FunctionComponent<Props> = compose(
-	withProps({
-		googleMapURL: "https://maps.googleapis.com/maps/api/js?key=" + process.env.API_KEY_GMAP + "&v=3.exp&libraries=geometry,drawing,places",
-		loadingElement: <div style={{ height: `100%` }} />,
-		containerElement: <div style={{ height: `600px`, flexShrink: 0, flexGrow: 0 }} />,
-		mapElement: <div style={{ height: `100%` }} />,
-	}),
-	withScriptjs,
-	withGoogleMap,
-)((props) => {
+const useStyles = makeStyles()((theme) => ({
+	map: {
+		height: "100%",
+	},
+}));
+
+const center = { lat: 60.163693147166, lng: 24.948047714233 };
+
+export const VehicleMap: FunctionComponent<Props> = (props) => {
+	const { classes } = useStyles();
+
+	const { isLoaded: isApiLoaded } = useJsApiLoader({
+		id: "google-map-script",
+		googleMapsApiKey: process.env.API_KEY_GMAP as string,
+	});
+
 	const [cords, setCords] = useState<Coords>({
 		latitudeStart: props.initialCoords?.latitudeStart || 60.161693147166,
 		longitudeStart: props.initialCoords?.longitudeStart || 24.938047714233,
@@ -34,18 +39,18 @@ export const VehicleMap: FunctionComponent<Props> = compose(
 	});
 
 	const { data: vehicles, dataUpdatedAt } = useGetApiVehicle(cords, { query: { refetchInterval: 1000, queryKey: ["myVehicles"] } });
-	const ref = useRef<any>();
+	const ref = useRef<google.maps.Rectangle>();
 
 	const debouncedSearch = debounce(async () => {
-		const bounds = ref.current.getBounds();
+		const bounds = ref.current?.getBounds();
 		if (!bounds) return;
 		const start = bounds.getNorthEast();
 		const end = bounds.getSouthWest();
 		const newCords: Coords = {
-			latitudeStart: end.lat().toFixed(12),
-			latitudeEnd: start.lat().toFixed(12),
-			longitudeStart: end.lng().toFixed(12),
-			longitudeEnd: start.lng().toFixed(12),
+			latitudeStart: Number(end.lat().toFixed(12)),
+			latitudeEnd: Number(start.lat().toFixed(12)),
+			longitudeStart: Number(end.lng().toFixed(12)),
+			longitudeEnd: Number(start.lng().toFixed(12)),
 		};
 		setCords(newCords);
 	}, 2000);
@@ -55,22 +60,36 @@ export const VehicleMap: FunctionComponent<Props> = compose(
 	};
 
 	// memoize markers
-	const markers = useMemo(
-		() => vehicles?.map((v) => <Marker label={v.description} position={new google.maps.LatLng(v.latitude, v.longitude)}></Marker>),
-		[dataUpdatedAt],
-	);
+	const markers = useMemo(() => {
+		if (!isApiLoaded) return [];
+		return vehicles?.map((v) => (
+			<Marker
+				key={v.id}
+				label={v.description}
+				options={{ optimized: true }}
+				position={new google.maps.LatLng(v.latitude ?? 0, v.longitude ?? 0)}
+			></Marker>
+		));
+	}, [dataUpdatedAt, isApiLoaded]);
 
 	// get initial box
-	const bounds = new google.maps.LatLngBounds(
-		new google.maps.LatLng(cords.latitudeStart, cords.longitudeStart),
-		new google.maps.LatLng(cords.latitudeEnd, cords.longitudeEnd),
-	);
+	const bounds = useMemo(() => {
+		if (!isApiLoaded) return;
+		return new google.maps.LatLngBounds(
+			new google.maps.LatLng(cords.latitudeStart, cords.longitudeStart),
+			new google.maps.LatLng(cords.latitudeEnd, cords.longitudeEnd),
+		);
+	}, [isApiLoaded, cords]);
+
+	if (!isApiLoaded) {
+		return;
+	}
 
 	return (
-		<GoogleMap defaultZoom={14} defaultCenter={{ lat: 60.163693147166, lng: 24.948047714233 }}>
-			<Rectangle ref={ref} data-testid="selector" onBoundsChanged={onBoundsChanged} draggable editable defaultBounds={bounds}></Rectangle>
+		<GoogleMap mapContainerClassName={classes.map} zoom={13} center={center}>
+			<RectangleF onLoad={(r) => (ref.current = r)} onBoundsChanged={onBoundsChanged} draggable editable bounds={bounds}></RectangleF> Rectangle
+			<TrafficLayer />
 			{markers}
-			<TrafficLayer autoUpdate />
 		</GoogleMap>
 	);
-});
+};

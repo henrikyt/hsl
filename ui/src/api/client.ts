@@ -2,14 +2,7 @@ import { Log } from "../util/log";
 
 const log = Log("RequestClient");
 
-export const requestClient = async <T>({
-	url,
-	method,
-	params,
-	data,
-	headers,
-	signal,
-}: {
+type RequestArgs = {
 	url: string;
 	method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 	params?: Record<string, unknown>;
@@ -17,15 +10,17 @@ export const requestClient = async <T>({
 	headers?: RequestInit["headers"];
 	responseType?: string;
 	signal?: AbortSignal;
-}): Promise<T> => {
+};
+
+export const requestClient = async <T>({ url, method, params, data, headers, signal }: RequestArgs): Promise<T> => {
 	if (typeof url === "object") {
-		method = (url as any).method;
-		params = (url as any).params;
-		data = (url as any).data;
-		method = (url as any).method;
-		signal = (url as any).signal;
-		headers = (url as any).headers;
-		url = (url as any).url;
+		method = (url as RequestArgs).method;
+		params = (url as RequestArgs).params;
+		data = (url as RequestArgs).data;
+		method = (url as RequestArgs).method;
+		signal = (url as RequestArgs).signal;
+		headers = (url as RequestArgs).headers;
+		url = (url as RequestArgs).url;
 	}
 	log.debug(method, url);
 	let uri = `${process.env.API_URL || ""}${url}`;
