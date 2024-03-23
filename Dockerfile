@@ -3,7 +3,7 @@ FROM guergeiro/pnpm:18-8 as builder
 
 WORKDIR /ui_build
 COPY ./ui/package.json ./ui/pnpm-lock.yaml ./
-RUN pnpm i
+RUN pnpm i --frozen-lockfile --prod
 COPY ./ui .
 RUN pnpm dist
 
@@ -21,7 +21,7 @@ ENV NODE_ENV production
 
 COPY --from=builder /server_build/prisma ./prisma
 COPY ./server/package.json ./server/pnpm-lock.yaml ./
-RUN pnpm i --prod
+RUN pnpm i --prod --frozen-lockfile 
 
 COPY --from=builder /server_build/out .
 COPY --from=builder /ui_build/dist ./public

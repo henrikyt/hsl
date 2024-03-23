@@ -10,11 +10,12 @@ const useStyles = makeStyles()((theme) => ({
 		flexShrink: 1,
 		flexGrow: 1,
 		overflow: "auto",
-		"& >table": { width: "100%" },
-		"& th": {
+		"& table": { width: "100%" },
+		"& thead": {
 			position: "sticky",
 			top: "0",
 			backgroundColor: "#F9F8F8",
+			zIndex: 2
 		},
 	},
 }));
@@ -78,6 +79,7 @@ export const VehicleDetails: FunctionComponent = () => {
 		count: vehicles.length ?? 0,
 		getScrollElement: () => parentRef.current as Element,
 		estimateSize: () => 38,
+		overscan: 2,
 	});
 
 	useEffect(() => {
@@ -110,28 +112,30 @@ export const VehicleDetails: FunctionComponent = () => {
 	};
 
 	return (
-		<div className={classes.root}>
-			<table ref={parentRef}>
-				<thead>
-					<tr>
-						{headers.map((headerKey) => (
-							<th key={headerKey}>{headerKey}</th>
-						))}
-					</tr>
-				</thead>
-				<tbody style={{ height: rowVirtualizer.getTotalSize() + "px", width: "100%" }}>
-					{rowVirtualizer.getVirtualItems().map((vItem) => {
-						const vehicle = vehicles[vItem.index];
-						return (
-							<tr key={vItem.key}>
-								{Object.keys(vehicle).map((key) => (
-									<td key={key}>{renderCell(key, vehicle[key as keyof typeof vehicle])}</td>
-								))}
-							</tr>
-						);
-					})}
-				</tbody>
-			</table>
+		<div ref={parentRef} className={classes.root}>
+			<div style={{ height: rowVirtualizer.getTotalSize() + "px" }}>
+				<table>
+					<thead>
+						<tr>
+							{headers.map((headerKey) => (
+								<th key={headerKey}>{headerKey}</th>
+							))}
+						</tr>
+					</thead>
+					<tbody>
+						{rowVirtualizer.getVirtualItems().map((virtualRow, index) => {
+							const vehicle = vehicles[virtualRow.index];
+							return (
+								<tr key={virtualRow.key} style={{ height: `${virtualRow.size}px`, transform: `translateY(${virtualRow.start - index * virtualRow.size}px)` }}>
+									{Object.keys(vehicle).map((key) => (
+										<td key={key}>{renderCell(key, vehicle[key as keyof typeof vehicle])}</td>
+									))}
+								</tr>
+							);
+						})}
+					</tbody>
+				</table>
+			</div>
 		</div>
 	);
 };

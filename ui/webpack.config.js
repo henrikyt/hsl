@@ -1,12 +1,15 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const Dotenv = require("dotenv-webpack");
-
+let ReactRefreshWebpackPlugin;
 USE_DEV_TOOLS = process.env.NODE_ENV !== "production";
+
+if (USE_DEV_TOOLS) {
+	ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
+}
 
 const proxy = {
 	"/api": { target: "http://127.0.0.1:3500/", secure: false, changeOrigin: true },
@@ -45,10 +48,10 @@ module.exports = {
 			chunkFilename: "asset/[contenthash].css",
 		}),
 		USE_DEV_TOOLS &&
-			new ReactRefreshWebpackPlugin({
-				exclude: [/node_modules/, /index\.(ts|js)$/],
-				overlay: false,
-			}),
+		new ReactRefreshWebpackPlugin({
+			exclude: [/node_modules/, /index\.(ts|js)$/],
+			overlay: false,
+		}),
 	].filter(Boolean),
 	optimization: {
 		minimizer: ["...", new CssMinimizerPlugin()],

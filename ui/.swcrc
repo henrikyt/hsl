@@ -13,6 +13,6 @@
 	},
 	"env": {
 		"mode": "usage",
-		"coreJs": "3.36.0"
+		"coreJs": "3.36.1"
 	}
 }
